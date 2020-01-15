@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-int FINAL_NUM = 1000;
+#define FINAL_NUM 1000
 
 int main (void) {
     int sum = 0;
