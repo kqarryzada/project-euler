@@ -146,8 +146,6 @@ uint64_t find_largest_prime_factor(uint64_t number) {
 }
 
 int main(int argc, char** argv) {
-    printf("%d\n", ULONG_MAX);
-    return;
     // 'value' is the number whose largest prime factor we are trying to find.
     uint64_t value = parse_input(argc, argv);
     if (value == 0) {
