@@ -13,6 +13,50 @@
 #define DEFAULT_INPUT 600851475143
 
 
+bool is_number(char* ptr) {
+    while (*ptr != 0) {
+        if (!isdigit(*ptr)) {
+            return false;
+        }
+        ptr++;
+    }
+
+    // Went through whole string, and all were digits
+    return true;
+}
+
+
+// This returns the input value to the program as a uint64_t. If the input provided to the program
+// is invalid, a message will be printed to STDERR and this method will return 0.
+uint64_t parse_input(int argc, char** argv) {
+    uint64_t value;
+    if (argc == 1) {
+        value = DEFAULT_INPUT;
+    }
+    else if (argc == 2) {
+        char* input = argv[1];
+        if (!is_number(input)) {
+            fprintf(stderr, "'%s' is not a valid number.\n", input);
+            return 0;
+        }
+
+        sscanf(argv[1], "%ld", &value);
+        if (value == 0) {
+            // 0 is not a prime number, and doesn't make sense as an input
+            fprintf(stderr, "0 is not a valid input.\n");
+            return 0;
+        }
+    }
+    else {
+        fprintf(stderr, "Invalid number of parameters detected.\n");
+        fprintf(stderr, "Usage: %s <number>\n", argv[0]);
+        return 0;
+    }
+
+    return value;
+}
+
+
 bool is_prime(uint64_t n) {
     // Primes are defined only for numbers > 1
     if (n < 2) {
@@ -101,11 +145,18 @@ uint64_t find_largest_prime_factor(uint64_t number) {
     return (N == number) ? 0 : N;
 }
 
-int main(void) {
+int main(int argc, char** argv) {
+    printf("%d\n", ULONG_MAX);
+    return;
     // 'value' is the number whose largest prime factor we are trying to find.
-    uint64_t value = DEFAULT_INPUT;
-    if (value < 2) {
+    uint64_t value = parse_input(argc, argv);
+    if (value == 0) {
+        // Error message has already been printed in parse_input()— just terminate
+        return -1;
+    }
+    if (value == 1) {
         fprintf(stderr, "The value requested was %ld, which is not a valid parameter.\n", value);
+        return -1;
     }
 
     uint64_t factor = find_largest_prime_factor(value);
