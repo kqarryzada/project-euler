@@ -10,77 +10,50 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_INPUT 600851475143
+// #define DEFAULT_INPUT 600851475143
+#define DEFAULT_INPUT 60
 #define DEBUG 1
 
 
-bool is_number(char* ptr) {
-    while (*ptr != 0) {
-        if (!isdigit(*ptr)) {
+bool is_prime(uint64_t n) {
+    // Primes are defined only for numbers > 1
+    if (n < 2) {
+        return false;
+    }
+    // Check if number is even
+    if (n % 2 == 0) {
+        return false;
+    }
+
+    // To check if a number is prime, we only have to check up to the square root of that number.
+    uint64_t sqrt_n = (uint64_t) sqrt((double) n);
+
+    // Loop over all odd numbers up to floor(sqrt(n))
+    for (int i = 3; i < sqrt_n; i += 2) {
+        if (n % i == 0) {
             return false;
         }
-        ptr++;
     }
 
-    // Went through whole string, and all were digits
     return true;
-
 }
 
 
-// This returns the input value to the program as a uint64_t. If the input provided to the program
-// is invalid, a message will be printed to STDERR and this method will return 0.
-uint64_t parse_input(int argc, char** argv) {
-    uint64_t value;
-    if (argc == 1) {
-        value = DEFAULT_INPUT;
-    }
-    else if (argc == 2) {
-        char* input = argv[1];
-        if (!is_number(input)) {
-            fprintf(stderr, "'%s' is not a valid number.\n", input);
-            return 0;
-        }
-
-        sscanf(argv[1], "%ld", &value);
-        if (value == 0) {
-            // 0 is not a prime number, and doesn't make sense as an input
-            fprintf(stderr, "0 is not a valid input.\n");
-            return 0;
-        }
-    }
-    else {
-        fprintf(stderr, "Invalid number of parameters detected.\n");
-        fprintf(stderr, "Usage: %s <number>\n", argv[0]);
-        return 0;
-    }
-
-    return value;
-}
-
-
-int main(int argc, char** argv) {
-    // 'value' is the number whose largest prime factor we are trying to find.
-    uint64_t value = parse_input(argc, argv);
-    if (value == 0) {
-        // Error message has already been printed; just terminate
-        return -1;
-    }
-
-#ifdef DEBUG
-    printf("Value is: %ld.\n", value);
-#endif
-
-    uint64_t N = value;
+// Uses Fermat's factorization algorithm to return the largest prime factor of N. If N is prime, 0
+// is returned.
+uint64_t find_largest_prime_factor(uint64_t _N) {
     // Per Fermat's factorization algorithm, N should be odd
+    uint64_t N = _N;
     while ((N % 2) == 0) {
         N = N / 2;
     }
 
-    // Calculate "a" and "b" based on Fermat's factorization algorithm
+    // a = ceil(sqrt(N))
     uint64_t a = (uint64_t) sqrt((double) N);
     a++;
-
+#ifdef DEBUG
+    printf("a starts with value: %ld\n", a);
+#endif
     while (a != N) {
         double b_squared = a * a - N;
         double b_float = sqrt(b_squared);
@@ -89,22 +62,50 @@ int main(int argc, char** argv) {
             // If integer and float values are equal, then b_squared is a perfect square. If that's
             // true, then we have found an "a" and a "b" such that:
             // N^2 = a^2 - b^2 ==> N^2 = (a + b)(a - b)
-            //
-            printf("The largest prime factor of %ld is %ld.\n", value, a + b);
-            return 0;
+            // The algorithm states that a - b will be prime.
+            #ifdef DEBUG
+            printf("a is %ld and b is %ld.\n", a, b);
+            #endif
+            return a - b;
+
+            // // If the factor we found is not prime, make a recursive call to find the largest prime
+            // // factor of that value.
+            // while (!is_prime(factor1)) {
+            //     prime_factor1 = find_largest_prime_factor(factor1);
+            // }
+
+            // // 
+            // return prime_factor1;
         }
 
         // b_squared was not a perfect square this iteration; increment a and try again.
         a++;
     }
 
-    // If we escape the loop, it means N must be prime. If N == value, then "value" was prime to
-    // begin with.
-    if (value == N) {
+    // If we escape the loop, it means N must be prime. If N == _N, then the value given to this
+    // function was prime to begin with, so we return 0 to indicate that _N has no prime factors
+    // other than itself.
+    if (N == _N) {
+        return 0;
+    }
+    else {
+        return N;
+    }
+}
+
+int main(void) {
+    // 'value' is the number whose largest prime factor we are trying to find.
+    uint64_t value = DEFAULT_INPUT;
+
+#ifdef DEBUG
+    printf("Value is: %ld.\n", value);
+#endif
+
+    uint64_t factor = find_largest_prime_factor(value);
+    if (factor == 0) {
         printf("There exists no largest prime factor for %ld, since it is a prime number.\n", value);
     }
     else {
-        printf("The largest prime factor of %ld is %ld.\n", value, N);
+        printf("The largest prime factor of %ld is %ld.\n", value, factor);
     }
-    return 0;
 }
