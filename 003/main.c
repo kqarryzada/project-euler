@@ -1,14 +1,15 @@
 // The prime factors of 13195 are 5, 7, 13 and 29.
 // What is the largest prime factor of the number 600851475143?
-//
-// This program uses Fermat's factorization method to answer the question.
 
 #include <ctype.h>
+#include <limits.h>
+#include <inttypes.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define DEFAULT_INPUT 600851475143
 
@@ -40,11 +41,24 @@ uint64_t parse_input(int argc, char** argv) {
             return 0;
         }
 
-        sscanf(argv[1], "%ld", &value);
+        sscanf(argv[1], "%lu", &value);
         if (value == 0) {
             // 0 is not a prime number, and doesn't make sense as an input
             fprintf(stderr, "0 is not a valid input.\n");
             return 0;
+        }
+        if (value == ULONG_MAX) {
+            // Likely, a number too large was entered. However, first check for the case where the
+            // exact value of ULONG_MAX was entered, since that is a legitimate use case. If not,
+            // then display an error.
+            char* ulong_max_str = malloc(sizeof (char) * 50);
+            sprintf(ulong_max_str, "%lu", ULONG_MAX);
+            if (strcmp(input, ulong_max_str) != 0) {
+                fprintf(stderr, "%s is too large. The largest acceptable value is %lu.\n", input, ULONG_MAX);
+                value = 0;
+            }
+            free(ulong_max_str);
+            return value;
         }
     }
     else {
@@ -153,15 +167,15 @@ int main(int argc, char** argv) {
         return -1;
     }
     if (value == 1) {
-        fprintf(stderr, "The value requested was %ld, which is not a valid parameter.\n", value);
+        fprintf(stderr, "The value requested was %lu, which is not a valid parameter.\n", value);
         return -1;
     }
 
     uint64_t factor = find_largest_prime_factor(value);
     if (factor == 0) {
-        printf("%ld is a prime number, so it does not have a prime factor other than itself.\n", value);
+        printf("%lu is a prime number, so it does not have a prime factor other than itself.\n", value);
     }
     else {
-        printf("The largest prime factor of %ld is %ld.\n", value, factor);
+        printf("The largest prime factor of %lu is %lu.\n", value, factor);
     }
 }
