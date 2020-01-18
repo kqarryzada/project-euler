@@ -72,17 +72,20 @@ uint64_t parse_input(int argc, char** argv) {
 
 
 bool is_prime(uint64_t n) {
-    // Primes are defined only for numbers > 1
-    if (n < 2) {
-        return false;
+    // 2 is an edge case, since it is the only even prime number
+    if (n == 2) {
+        return true;
     }
-    // Check if number is even
-    if (n % 2 == 0) {
+    // - Primes are defined only for numbers > 1
+    // - Even numbers (except n == 2) are not prime
+    if (n < 2 || n % 2 == 0) {
         return false;
     }
 
     // To check if a number is prime, we only have to check up to the square root of that number.
+    // Increment this value to avoid edge case where sqrt_n == 3 does not enter the main loop
     uint64_t sqrt_n = (uint64_t) sqrt((double) n);
+    sqrt_n++;
 
     // Loop over all odd numbers up to floor(sqrt(n))
     for (int i = 3; i < sqrt_n; i += 2) {
