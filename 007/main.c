@@ -29,6 +29,6 @@ int32_t main(void) {
     }
     i--;    // i will always be incremented one extra time
 
-    printf("For N = %d, the Nth prime is %lu.\n", N, i);
+    printf("For N = %d, the Nth prime number is %lu.\n", N, i);
     return 0;
 }
