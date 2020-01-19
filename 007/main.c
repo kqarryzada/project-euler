@@ -6,39 +6,14 @@
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "../lib/numbers.h"
 
 #define N 10001
 
-bool is_prime(uint64_t n) {
-    // 2 is an edge case, since it is the only even prime number
-    if (n == 2) {
-        return true;
-    }
-    // - Primes are defined only for numbers > 1
-    // - Even numbers (except n == 2) are not prime
-    if (n < 2 || n % 2 == 0) {
-        return false;
-    }
 
-    // To check if a number is prime, we only have to check up to the square root of that number.
-    // Increment this value to avoid edge case where sqrt_n == 3 does not enter the main loop
-    uint64_t sqrt_n = (uint64_t) sqrt((double) n);
-    sqrt_n++;
-
-    // Loop over all odd numbers up to floor(sqrt(n))
-    for (int i = 3; i < sqrt_n; i += 2) {
-        if (n % i == 0) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-
-int main(void) {
+int32_t main(void) {
     // "It's time to c-c-c-c-c-c-count!"
-    int count = 0;
+    int32_t count = 0;
     uint64_t i;
     for (i = 2; count != N; i++) {
         if (i == 0) {

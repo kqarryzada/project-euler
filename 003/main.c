@@ -10,92 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../lib/numbers.h"
 
 #define DEFAULT_INPUT 600851475143
-
-
-bool is_number(char* ptr) {
-    while (*ptr != 0) {
-        if (!isdigit(*ptr)) {
-            return false;
-        }
-        ptr++;
-    }
-
-    // Went through whole string, and all were digits
-    return true;
-}
-
-
-// This returns the input value to the program as a uint64_t. If the input provided to the program
-// is invalid, a message will be printed to STDERR and this method will return 0.
-uint64_t parse_input(int argc, char** argv) {
-    uint64_t value;
-    if (argc == 1) {
-        value = DEFAULT_INPUT;
-    }
-    else if (argc == 2) {
-        char* input = argv[1];
-        if (!is_number(input)) {
-            fprintf(stderr, "'%s' is not a valid number.\n", input);
-            return 0;
-        }
-
-        sscanf(argv[1], "%lu", &value);
-        if (value == 0) {
-            // 0 is not a prime number, and doesn't make sense as an input
-            fprintf(stderr, "0 is not a valid input.\n");
-            return 0;
-        }
-        if (value == ULONG_MAX) {
-            // Likely, a number too large was entered. However, first check for the case where the
-            // exact value of ULONG_MAX was entered, since that is a legitimate use case. If not,
-            // then display an error.
-            char* ulong_max_str = malloc(sizeof (char) * 50);
-            sprintf(ulong_max_str, "%lu", ULONG_MAX);
-            if (strcmp(input, ulong_max_str) != 0) {
-                fprintf(stderr, "%s is too large. The largest acceptable value is %lu.\n", input, ULONG_MAX);
-                value = 0;
-            }
-            free(ulong_max_str);
-            return value;
-        }
-    }
-    else {
-        fprintf(stderr, "Invalid number of parameters detected.\n");
-        fprintf(stderr, "Usage: %s <number>\n", argv[0]);
-        return 0;
-    }
-
-    return value;
-}
-
-
-bool is_prime(uint64_t n) {
-    // 2 is an edge case, since it is the only even prime number
-    if (n == 2) {
-        return true;
-    }
-    // - Primes are defined only for numbers > 1
-    // - Even numbers (except n == 2) are not prime
-    if (n < 2 || n % 2 == 0) {
-        return false;
-    }
-
-    // To check if a number is prime, we only have to check up to the square root of that number.
-    // Increment this value to avoid edge case where sqrt_n == 3 does not enter the main loop
-    uint64_t sqrt_n = (uint64_t) sqrt((double) n);
-    sqrt_n++;
-
-    // Loop over all odd numbers up to floor(sqrt(n))
-    for (int i = 3; i < sqrt_n; i += 2) {
-        if (n % i == 0) {
-            return false;
-        }
-    }
-
-    return true;
-}
 
 
 // Uses Fermat's factorization algorithm to return the largest prime factor of 'number'. If 'number'
@@ -162,9 +79,17 @@ uint64_t find_largest_prime_factor(uint64_t number) {
     return (N == number) ? 0 : N;
 }
 
-int main(int argc, char** argv) {
+int32_t main(int32_t argc, char** argv) {
     // 'value' is the number whose largest prime factor we are trying to find.
-    uint64_t value = parse_input(argc, argv);
+    uint64_t value;
+
+    if (argc == 1) {
+        // Use default value
+        value = DEFAULT_INPUT;
+    }
+    else {
+        value = (uint64_t) parse_numeric_input(argc, argv);
+    }
     if (value == 0) {
         // Error message has already been printed in parse_input()— just terminate
         return -1;
