@@ -1,11 +1,22 @@
 #include <ctype.h>
-#include <inttypes.h>
 #include <limits.h>
 #include <math.h>
 #include <malloc.h>
-#include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 #include "numbers.h"
+
+
+// Converts single-digit number from string value to integer. Returns -1 if an improper value is
+// provided.
+int32_t ascii_to_number(char num_char) {
+    int32_t num = (int32_t) num_char - 0x30;
+    if (num > 9 || num < 0) {
+        return -1;
+    }
+
+    return num;
+}
 
 
 bool is_prime(uint64_t n) {

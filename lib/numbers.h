@@ -1,7 +1,18 @@
 // This file contains utility functions that are related to numberic computations or properties of
 // numbers.
 //
+#ifndef NUMBERS_H
+#define NUMBERS_H
 
+#include <inttypes.h>
+#include <stdbool.h>
+
+#endif
+
+// Converts a single character from a string representation to an integer. Returns -1 if an invalid
+// input is provided.
+// 
+int32_t ascii_to_number(char num_char);
 
 bool is_prime(uint64_t n);
 
