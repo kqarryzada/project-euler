@@ -14,6 +14,16 @@
 // 
 int32_t ascii_to_number(char num_char);
 
+// Obtains the largest prime factor as long as 'number' is not prime itself, or less than 2.
+// Otherwise, 0 is returned.
+// 
+uint64_t get_largest_prime_factor(uint64_t number);
+
+// Returns the total number of divisors of n, including 1 and n. For example, 4 has three divisors,
+// which are 1, 2, and 4.
+// 
+uint32_t get_num_divisors(uint64_t n);
+
 bool is_prime(uint64_t n);
 
 bool is_number(char* ptr);
