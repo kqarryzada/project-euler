@@ -26,7 +26,7 @@ int32_t main(void) {
     bool found = false;
 
     // Loop will be escaped when 'triangle_number' overflows
-    for (uint32_t i = 1; triangle_number >= 0; i++) {
+    for (int32_t i = 1; triangle_number >= 0; i++) {
         // Get the next triangle number
         triangle_number += i;
         if (get_num_divisors(triangle_number) > DIVISOR_THRESHOLD) {
