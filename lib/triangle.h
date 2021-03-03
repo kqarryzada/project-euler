@@ -32,6 +32,7 @@
  * @param depth     The depth of the triangle (i.e., the number of rows).
  * @param triangle  A pointer to the buffer containing the triangle.
  *
- * @return          The largest sum obtained by traversing adjacent numbers.
+ * @return          The largest sum obtained by traversing adjacent numbers,
+ *					or -1 if there was an issue.
  */
 int32_t compute_max_sum(uint32_t depth, uint32_t width, int32_t triangle[depth][width]);
